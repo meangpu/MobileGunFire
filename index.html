@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=yes, viewport-fit=cover"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <title>MobileGunFire </title>
+    <meta name="description" content="a fire clone" />
+    <meta property="og:title" content="MobileGunFire " />
+    <meta property="og:description" content="a fire clone" />
+    <meta property="og:image" content="https://meangpu.github.io/assets/logo.05c59aac.webp" />
+    <link rel="stylesheet" href="TemplateData/style.css" />
+    <link rel="icon" href="TemplateData/favicon.png" />
+    <link rel="apple-touch-icon" href="TemplateData/ios_icon.png" />
+  </head>
+  <body>
+    <div id="unity-container">
+      <canvas id="unity-canvas"></canvas>
+    </div>
+    <div id="loading-cover">
+      <div id="unity-loading-bar">
+        <div id="unity-logo">
+          <img src="TemplateData/logo.png" alt="Logo" />
+        </div>
+        <div id="unity-progress-bar-empty">
+          <div id="unity-progress-bar-full"></div>
+        </div>
+        <div class="spinner"></div>
+      </div>
+    </div>
+    <script>
+            const buildUrl = "Build";
+            const loaderUrl = buildUrl + "/MobileGunFire.loader.js";
+            const config = {
+              dataUrl: buildUrl + "/MobileGunFire.data.unityweb",
+              frameworkUrl: buildUrl + "/MobileGunFire.framework.js.unityweb",
+              codeUrl: buildUrl + "/MobileGunFire.wasm.unityweb",
+              streamingAssetsUrl: "StreamingAssets",
+              companyName: "meangpu",
+              productName: "MobileGunFire",
+              productVersion: "0.05-26-Nov-2024 3:41 PM",
+            };
+
+            const container = document.querySelector("#unity-container");
+            const canvas = document.querySelector("#unity-canvas");
+            const loadingCover = document.querySelector("#loading-cover");
+            const progressBarEmpty = document.querySelector("#unity-progress-bar-empty");
+            const progressBarFull = document.querySelector("#unity-progress-bar-full");
+            const spinner = document.querySelector('.spinner');
+
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+            if (isMobile) {
+              // this make game blur
+              // but prevent iphone safari home screen to broken when change orientation
+              config.devicePixelRatio = 1;
+            }
+
+
+
+            loadingCover.style.display = "";
+
+            const script = document.createElement("script");
+            script.src = loaderUrl;
+            script.onload = () => {
+              createUnityInstance(canvas, config, (progress) => {
+                spinner.style.display = "none";
+                progressBarEmpty.style.display = "";
+                progressBarFull.style.width = `${100 * progress}%`;
+              }).then((unityInstance) => {
+                loadingCover.style.display = "none";
+              }).catch((message) => {
+                alert(message);
+              });
+            };
+
+            document.body.appendChild(script);
+
+            function handleResize() {
+              const canvas = document.querySelector("#unity-canvas");
+              canvas.width = window.innerWidth;
+              canvas.height = window.innerHeight;
+            }
+
+            window.addEventListener('resize', handleResize);
+            window.addEventListener('orientationchange', handleResize);
+            handleResize();
+    </script>
+  </body>
+</html>
